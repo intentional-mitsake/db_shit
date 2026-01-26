@@ -37,10 +37,13 @@ func init() {
 	cobra.OnInitialize(initConfig)
 	// Cobra supports persistent flags, which, if defined here,
 	//these flags can be used by all subcommands. no need to redefine in each command file.
+	//cuz rootcmd itself has no run func, these flags will be available to all subcommands but the rootcmd itself won't use them
 	rootCmd.PersistentFlags().String("host", "localhost", "Database Host")
 	rootCmd.PersistentFlags().String("username", "admin", "Database User")
 	rootCmd.PersistentFlags().String("password", "", "Database Password")
 	rootCmd.PersistentFlags().String("db", "testdb", "Database Name")
+	rootCmd.PersistentFlags().Int("port", 3306, "Database Port")
+	rootCmd.PersistentFlags().String("type", "mysql", "Database Type (mysql, postgres)")
 	rootCmd.PersistentFlags().String("destination", "", "Destination File")
 	// will be global for your application.
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.db_shit.yaml)")
@@ -77,5 +80,7 @@ func initConfig() {
 	viper.BindPFlag("username", rootCmd.PersistentFlags().Lookup("username"))
 	viper.BindPFlag("password", rootCmd.PersistentFlags().Lookup("password"))
 	viper.BindPFlag("db", rootCmd.PersistentFlags().Lookup("db"))
+	viper.BindPFlag("port", rootCmd.PersistentFlags().Lookup("port"))
+	viper.BindPFlag("type", rootCmd.PersistentFlags().Lookup("type"))
 	viper.BindPFlag("destination", rootCmd.PersistentFlags().Lookup("destination"))
 }
