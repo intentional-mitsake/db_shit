@@ -1,0 +1,19 @@
+# config file for diff profiles/db
+app_name: "dbcli"
+version: 1.0
+
+databases:
+  local:
+    type: "postgres"
+    host: "localhost"
+    port: 5432
+    user: "username"
+    password: "password"
+    db: "mydatabase"
+  remote:
+    type: "mysql"
+    host: "1.2.3.4"
+    port: 5432
+    user: "username"
+    password: "password"
+    db: "remotedb"
