@@ -86,6 +86,8 @@ func (p *PGClient) Create() error {
 	if err != nil {
 		return err
 	}
+	//closes the connection once function is done
+	//defer executes after func returns or exc is complete i think
 	defer p.Close()
 	return nil
 }

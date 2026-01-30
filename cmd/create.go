@@ -22,6 +22,7 @@ var createCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		cfgFile := config.LoadDatabaseConfig()
 		client := db.NewPGClient(cfgFile)
+		//call create, connection is opened inside create and closed as well
 		if err := client.Create(); err != nil {
 			return fmt.Errorf("failed to create database: %w", err)
 		}
