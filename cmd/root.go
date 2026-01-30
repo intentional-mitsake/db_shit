@@ -42,7 +42,7 @@ func init() {
 	rootCmd.PersistentFlags().String("username", "admin", "Database User")
 	rootCmd.PersistentFlags().String("password", "", "Database Password")
 	rootCmd.PersistentFlags().String("db", "testdb", "Database Name")
-	rootCmd.PersistentFlags().Int("port", 3306, "Database Port")
+	rootCmd.PersistentFlags().Int("port", 5432, "Database Port")
 	rootCmd.PersistentFlags().String("type", "mysql", "Database Type (mysql, postgres)")
 	rootCmd.PersistentFlags().String("destination", "", "Destination File")
 	// will be global for your application.
@@ -51,6 +51,7 @@ func init() {
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+
 }
 
 func initConfig() {
