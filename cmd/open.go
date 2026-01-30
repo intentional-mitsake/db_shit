@@ -18,7 +18,7 @@ var openCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		cfgFile := config.LoadDatabaseConfig()
 		client := db.NewPGClient(cfgFile)
-		if err := client.Connect(); err != nil {
+		if err := client.Connect(true); err != nil {
 			return fmt.Errorf("connection failure: %w", err)
 		}
 		//defer executes when the function returns
