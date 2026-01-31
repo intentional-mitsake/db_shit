@@ -8,10 +8,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// have to keep in mind this is for testing the connection only
-// the connection is closed immediately after this command is done executing
-// so this funcitonaltiiy needs to be added to other functions like cresate, backup and restore
-// FOR TEST ONLY
 var createCmd = &cobra.Command{
 	Use:   "create",
 	Short: "Open a connection to a database server and create a new database",
