@@ -39,13 +39,13 @@ func init() {
 	//these flags can be used by all subcommands. no need to redefine in each command file.
 	//cuz rootcmd itself has no run func, these flags will be available to all subcommands but the rootcmd itself won't use them
 	//used stringP instead of string to allow shorthand flags
-	rootCmd.PersistentFlags().StringP("host", "h", "localhost", "Database Host")
+	rootCmd.PersistentFlags().StringP("host", "H", "localhost", "Database Host")
 	rootCmd.PersistentFlags().StringP("username", "u", "admin", "Database User")
 	rootCmd.PersistentFlags().StringP("password", "p", "", "Database Password")
 	rootCmd.PersistentFlags().StringP("db", "d", "testdb", "Database Name")
-	rootCmd.PersistentFlags().IntP("port", "p", 5432, "Database Port")
-	rootCmd.PersistentFlags().StringP("type", "t", "mysql", "Database Type (mysql, postgres)")
-	rootCmd.PersistentFlags().StringP("destination", "dest", "", "Destination File")
+	rootCmd.PersistentFlags().IntP("port", "P", 5432, "Database Port")
+	rootCmd.PersistentFlags().StringP("type", "T", "mysql", "Database Type (mysql, postgres)")
+	rootCmd.PersistentFlags().StringP("destination", "D", "", "Destination File")
 	// will be global for your application.
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.db_shit.yaml)")
 

@@ -98,3 +98,40 @@ func (p *PGClient) Close() error {
 	}
 	return p.db.Close()
 }
+
+// returns a list of existing dbs and error if any
+func (p *PGClient) List() ([]string, error) {
+	c_err := p.Connect(false) //false cuz we r listing existing dbs and using the default 'postgres' db to connect
+	if c_err != nil {
+		return nil, c_err
+	}
+	//dataistemplate false excludes template dbs; in thss case we only want user-created dbs and aere ingoring 'postgres'
+	//datname is a column in pg_database that holds the db names
+	//pg_database is a system catalog table that holds info about all dbs in the pg server
+	rows, err := p.db.Query(`SELECT datname FROM pg_database WHERE datistemplate = false;`)
+	//above query returns *sql.Rows and error if any
+	//we stored the *sql.Rows in rows var now we can do two things:
+	//1. iterate over rows to get each db name
+	//2. close rows once done
+	if err != nil {
+		return nil, err
+	}
+	var listDBs []string
+	for rows.Next() {
+		var dbName string
+		err := rows.Scan(&dbName)
+		if err != nil {
+			return nil, err
+		}
+		//appending each db name to the list
+		listDBs = append(listDBs, dbName)
+	}
+	//close to release resources
+	rows.Close()
+	if err != nil {
+		return nil, err
+	}
+	defer p.Close()
+	//if no errors, return the list of db names and nil error
+	return listDBs, nil
+}
