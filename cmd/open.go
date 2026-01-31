@@ -1,10 +1,9 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/intentional_mitsake/db_shit/pkg/config"
 	"github.com/intentional_mitsake/db_shit/pkg/db"
+	"github.com/intentional_mitsake/db_shit/pkg/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -16,15 +15,16 @@ var openCmd = &cobra.Command{
 	Use:   "open",
 	Short: "Open a connection to a database server",
 	RunE: func(cmd *cobra.Command, args []string) error {
+		logger := utils.CreateLogger()
 		cfgFile := config.LoadDatabaseConfig()
 		client := db.NewPGClient(cfgFile)
 		if err := client.Connect(true); err != nil {
-			return fmt.Errorf("connection failure: %w", err)
+			logger.Error(err.Error())
 		}
 		//defer executes when the function returns
 		//so the connection is closed after the function returns
 		defer client.Close()
-		fmt.Println("Connection opened successfully.")
+		logger.Info("Connection Closed.")
 		return nil
 	},
 }

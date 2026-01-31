@@ -5,6 +5,8 @@ import (
 	"fmt"
 
 	"github.com/intentional_mitsake/db_shit/pkg/config"
+	"github.com/intentional_mitsake/db_shit/pkg/utils"
+
 	// side-effect import for postgres driver
 	_ "github.com/lib/pq"
 )
@@ -74,7 +76,9 @@ func (p *PGClient) Connect(existing bool) error {
 }
 
 func (p *PGClient) Create() error {
+	logger := utils.CreateLogger()
 	//first we need to connect to the pg server
+	logger.Info("Connecting to PostgreSQL server...")
 	c_err := p.Connect(false) //false cuz we are creating a new db
 	//Connect returns an error if connection fails and nil if executed
 	if c_err != nil {
@@ -82,13 +86,16 @@ func (p *PGClient) Create() error {
 	}
 	//name of new db is the name user gave with create command
 	//quote identifier to handle mixed-case and special chars safely
+	logger.Info("Creating database " + p.config.Database + "...")
 	_, err := p.db.Exec(fmt.Sprintf(`CREATE DATABASE "%s";`, p.config.Database))
 	if err != nil {
 		return err
 	}
+	logger.Info("Database " + p.config.Database + " created successfully.")
 	//closes the connection once function is done
 	//defer executes after func returns or exc is complete i think
 	defer p.Close()
+	logger.Info("Connection closed.")
 	return nil
 }
 
@@ -101,13 +108,16 @@ func (p *PGClient) Close() error {
 
 // returns a list of existing dbs and error if any
 func (p *PGClient) List() ([]string, error) {
+	logger := utils.CreateLogger()
 	c_err := p.Connect(false) //false cuz we r listing existing dbs and using the default 'postgres' db to connect
+	logger.Info("Connecting to PostgreSQL server...")
 	if c_err != nil {
 		return nil, c_err
 	}
 	//dataistemplate false excludes template dbs; in thss case we only want user-created dbs and aere ingoring 'postgres'
 	//datname is a column in pg_database that holds the db names
 	//pg_database is a system catalog table that holds info about all dbs in the pg server
+	logger.Info("Getting database list...")
 	rows, err := p.db.Query(`SELECT datname FROM pg_database WHERE datistemplate = false;`)
 	//above query returns *sql.Rows and error if any
 	//we stored the *sql.Rows in rows var now we can do two things:
@@ -116,6 +126,7 @@ func (p *PGClient) List() ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
+	logger.Info("Rows received!")
 	var listDBs []string
 	for rows.Next() {
 		var dbName string
@@ -128,10 +139,12 @@ func (p *PGClient) List() ([]string, error) {
 	}
 	//close to release resources
 	rows.Close()
+	logger.Info("Rows Closed.")
 	if err != nil {
 		return nil, err
 	}
 	defer p.Close()
+	logger.Info("Connection closed.")
 	//if no errors, return the list of db names and nil error
 	return listDBs, nil
 }

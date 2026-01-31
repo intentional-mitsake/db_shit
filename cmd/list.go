@@ -5,6 +5,7 @@ import (
 
 	"github.com/intentional_mitsake/db_shit/pkg/config"
 	"github.com/intentional_mitsake/db_shit/pkg/db"
+	"github.com/intentional_mitsake/db_shit/pkg/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -16,12 +17,13 @@ var listCmd = &cobra.Command{
 	dbcli list --username username --password password --host localhost -- port 5432
 	`,
 	RunE: func(cmd *cobra.Command, args []string) error {
+		logger := utils.CreateLogger()
 		cfgFile := config.LoadDatabaseConfig()
 		client := db.NewPGClient(cfgFile)
 		//call create, connection is opened inside create and closed as well
 		list, err := client.List()
 		if err != nil {
-			return fmt.Errorf("failed to list databases: %w", err)
+			logger.Error(err.Error())
 		}
 		//looping over the list
 		fmt.Println("List of databases:")

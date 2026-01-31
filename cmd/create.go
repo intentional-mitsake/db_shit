@@ -1,10 +1,9 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/intentional_mitsake/db_shit/pkg/config"
 	"github.com/intentional_mitsake/db_shit/pkg/db"
+	"github.com/intentional_mitsake/db_shit/pkg/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -16,13 +15,13 @@ var createCmd = &cobra.Command{
 	dbcli create --username username --password password --host localhost -- port 5432 --database new_db
 	`,
 	RunE: func(cmd *cobra.Command, args []string) error {
+		logger := utils.CreateLogger()
 		cfgFile := config.LoadDatabaseConfig()
 		client := db.NewPGClient(cfgFile)
 		//call create, connection is opened inside create and closed as well
 		if err := client.Create(); err != nil {
-			return fmt.Errorf("failed to create database: %w", err)
+			logger.Error(err.Error())
 		}
-		fmt.Println("Database created successfully.")
 		return nil
 	},
 }
