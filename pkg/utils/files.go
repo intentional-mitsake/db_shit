@@ -7,14 +7,15 @@ import (
 )
 
 func CreateBackup(backupN string, username string, database string) error {
-	dir := "/utils/backups"
+	dir := "backups"
 	//Mkdir makes a file inside an existing folder
 	// o755 is the permisiion mode to allow creation
 	// ISExist checks wheter the arhument(err in thsis case) says the file/path exists or not
 	if err := os.Mkdir(dir, 0755); err != nil && !os.IsExist(err) {
 		return err
 	}
-	f, err := os.Create(filepath.Join(dir, backupN))
+	filename := backupN + ".dump"
+	f, err := os.Create(filepath.Join(dir, filename))
 	if err != nil {
 		return err
 	}
