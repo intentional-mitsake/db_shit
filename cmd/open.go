@@ -20,6 +20,7 @@ var openCmd = &cobra.Command{
 		client := db.NewPGClient(cfgFile)
 		if err := client.Connect(true); err != nil {
 			logger.Error(err.Error())
+			return nil
 		}
 		//defer executes when the function returns
 		//so the connection is closed after the function returns

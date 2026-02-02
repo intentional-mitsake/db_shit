@@ -21,6 +21,7 @@ var createCmd = &cobra.Command{
 		//call create, connection is opened inside create and closed as well
 		if err := client.Create(); err != nil {
 			logger.Error(err.Error())
+			return nil
 		}
 		return nil
 	},
