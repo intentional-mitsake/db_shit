@@ -24,6 +24,7 @@ var listCmd = &cobra.Command{
 		list, err := client.List()
 		if err != nil {
 			logger.Error(err.Error())
+			return nil
 		}
 		//looping over the list
 		fmt.Println("List of databases:")
