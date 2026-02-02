@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 
+	"time"
+
 	"github.com/intentional_mitsake/db_shit/pkg/config"
 	"github.com/intentional_mitsake/db_shit/pkg/utils"
 
@@ -147,4 +149,22 @@ func (p *PGClient) List() ([]string, error) {
 	logger.Info("Connection closed.")
 	//if no errors, return the list of db names and nil error
 	return listDBs, nil
+}
+
+func (p *PGClient) Backup() error {
+	logger := utils.CreateLogger()
+	logger.Info("Connecting to the server...")
+	if c_err := p.Connect(true); c_err != nil {
+		return c_err
+	}
+	logger.Info("Creating Backup...")
+	now := time.Now().UTC()
+	timestamp := now.Format("20060102_150405")
+	destination := p.config.Destination
+	if err := utils.CreateBackup(destination+timestamp, p.config.Username, p.config.Database); err != nil {
+		return err
+	}
+	defer p.Close()
+	logger.Info("Conncetion Closed.")
+	return nil
 }

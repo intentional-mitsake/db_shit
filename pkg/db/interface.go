@@ -5,11 +5,10 @@ package db
 // instead of coding separate funcs for each type of db, we instead create these general funcs for all
 //basically what operations the db client can perform
 type DBClient interface {
-	Backup(destination string) error //takes file name returns err/nill
-	Connect(existing bool) error     // takes nothing returns errr/nil
+	Backup() error               //takes file name returns err/nill
+	Connect(existing bool) error // takes nothing returns errr/nil
 	Restore(source string) error
 	Create() error
-	Ping() error
 	List() ([]string, error) //takes nothing returns an array of strings or err
 	Close() error
 }
