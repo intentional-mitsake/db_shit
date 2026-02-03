@@ -7,7 +7,7 @@ package db
 type DBClient interface {
 	Backup() error               //takes file name returns err/nill
 	Connect(existing bool) error // takes nothing returns errr/nil
-	Restore(source string) error
+	Restore() error
 	Create() error
 	List() ([]string, error) //takes nothing returns an array of strings or err
 	Close() error

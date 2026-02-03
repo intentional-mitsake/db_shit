@@ -3,6 +3,8 @@ package db
 import (
 	"database/sql"
 	"fmt"
+	"os"
+	"os/exec"
 
 	"time"
 
@@ -154,6 +156,7 @@ func (p *PGClient) List() ([]string, error) {
 func (p *PGClient) Backup() error {
 	logger := utils.CreateLogger()
 	logger.Info("Connecting to the server...")
+	//it gives error if the db doesnt exist here btw
 	if c_err := p.Connect(true); c_err != nil {
 		return c_err
 	}
@@ -165,5 +168,58 @@ func (p *PGClient) Backup() error {
 	}
 	defer p.Close()
 	logger.Info("Conncetion Closed.")
+	return nil
+}
+
+func (p *PGClient) Restore() error {
+	logger := utils.CreateLogger()
+	list, err := p.List()
+	if err != nil {
+		return err
+	}
+	exists := false
+	for _, db := range list {
+		if db == p.config.Database {
+			logger.Info("Connecting to the server...")
+			//if db exists connect to it
+			if c_err := p.Connect(true); c_err != nil {
+				return c_err
+			}
+			exists = true
+			break
+		}
+	}
+	if !exists {
+		logger.Info("Creating the database...")
+		//if db exists connect to it
+		if c_err := p.Connect(false); c_err != nil {
+			return c_err
+		}
+		//create if not exist
+		p.Create()
+	}
+	source := p.config.Source
+	restorCmd := exec.Command(
+		"pg_restore",
+		"-U", p.config.Username,
+		"-h", p.config.Host,
+		"-d", p.config.Database,
+		"--clean",
+		//withiout thsi one, it gives error while cleaning
+		//if db, schema doesnt exist, when it tries to clean
+		//it finds that the db or schema to clean up is not there
+		//so gives an erro and moves on to restoring anyway
+		//operation succeeds, db is restored but still gives an error
+		"--if-exists",
+		source,
+	)
+	//without this in case fo error we just get "exit status 1"
+	//acutal err msg is writter to stderr not to the terminal
+	restorCmd.Stderr = os.Stderr //show errors live
+	//this one will only get error code, error is written to stderr for thsi execution
+	if err := restorCmd.Run(); err != nil {
+		return err
+	}
+
 	return nil
 }
