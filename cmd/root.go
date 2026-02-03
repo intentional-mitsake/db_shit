@@ -45,7 +45,7 @@ func init() {
 	rootCmd.PersistentFlags().StringP("db", "d", "testdb", "Database Name")
 	rootCmd.PersistentFlags().IntP("port", "P", 5432, "Database Port")
 	rootCmd.PersistentFlags().StringP("type", "T", "mysql", "Database Type (mysql, postgres)")
-	rootCmd.PersistentFlags().StringP("destination", "D", "", "Destination File")
+	rootCmd.PersistentFlags().StringP("source", "s", "", "Destination File")
 	// will be global for your application.
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.db_shit.yaml)")
 
@@ -85,5 +85,5 @@ func initConfig() {
 	viper.BindPFlag("db", rootCmd.PersistentFlags().Lookup("db"))
 	viper.BindPFlag("port", rootCmd.PersistentFlags().Lookup("port"))
 	viper.BindPFlag("type", rootCmd.PersistentFlags().Lookup("type"))
-	viper.BindPFlag("destination", rootCmd.PersistentFlags().Lookup("destination"))
+	viper.BindPFlag("source", rootCmd.PersistentFlags().Lookup("source"))
 }

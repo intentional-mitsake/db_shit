@@ -160,8 +160,7 @@ func (p *PGClient) Backup() error {
 	logger.Info("Creating Backup...")
 	now := time.Now().UTC()
 	timestamp := now.Format("20060102_150405")
-	destination := p.config.Destination
-	if err := utils.CreateBackup(destination+timestamp, p.config.Username, p.config.Database); err != nil {
+	if err := utils.CreateBackup(p.config.Database+timestamp, p.config.Username, p.config.Database); err != nil {
 		return err
 	}
 	defer p.Close()
